@@ -1,3 +1,7 @@
-Тестовое задание для Picasso Software
-
-https://gist.github.com/tm-minty/c39f9ab2de1c70ca9d4d559505678234
+# Загрузка данных в БД
+Применение:
+  - В каталог data/ вставить файл с данными police-department-calls-for-service.csv
+  - Запустить скрипт create_bd.py
+  - Запустить скрипт load_data.py, результаты его работы - это лог файл log.log и файл БД san_francisco.sqlite3 в results/ 
+ 
+В файле figures/uml.png показаны зависимости между таблицами БД

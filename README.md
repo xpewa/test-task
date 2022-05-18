@@ -1,3 +1,3 @@
-# Тестовое задание для Picasso Software
+РўРµСЃС‚РѕРІРѕРµ Р·Р°РґР°РЅРёРµ РґР»СЏ Picasso Software
 
 https://gist.github.com/tm-minty/c39f9ab2de1c70ca9d4d559505678234

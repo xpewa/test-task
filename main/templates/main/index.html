@@ -1,0 +1,56 @@
+{% extends 'main/includes/base.html' %}
+
+{% block tittle %}San-Francisco police database incidents{% endblock %}
+
+{% block content %}
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Crime Id</th>
+                <th scope="col">Original Crime Type Name</th>
+                <th scope="col">Report Date</th>
+                <th scope="col">Call Date</th>
+                <th scope="col">Offense Date</th>
+                <th scope="col">Call Time</th>
+                <th scope="col">Call Date Time</th>
+                <th scope="col">Disposition</th>
+                <th scope="col">Address</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Agency Id</th>
+                <th scope="col">Address Type</th>
+                <th scope="col">Common Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in data %}
+            <tr>
+                <td>{{ i.crime_id }}</td>
+                <td>{{ i.original_crime_type_name }}</td>
+                <td>{{ i.date.report_date }}</td>
+                <td>{{ i.date.call_date }}</td>
+                <td>{{ i.date.offense_date }}</td>
+                <td>{{ i.date.call_time }}</td>
+                <td>{{ i.date.call_date_time }}</td>
+                <td>{{ i.location.disposition }}</td>
+                <td>{{ i.location.address }}</td>
+                <td>{{ i.location.city }}</td>
+                <td>{{ i.location.state }}</td>
+                <td>{{ i.location.agency_id }}</td>
+                <td>{{ i.location.address_type }}</td>
+                <td>{{ i.location.common_location }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form action="{% url 'index' %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn" type="submit">Filter</button>
+    </form>
+
+    {% include 'main/includes/paginator.html' %}
+
+{% endblock %}

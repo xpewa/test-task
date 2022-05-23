@@ -4,12 +4,14 @@ import sqlite3
 DB_PATH = 'results/san_francisco.sqlite3'
 SQL_FILE_PATH = 'create_bd.sql'
 
+
 def run_sql_script(cursor, path):
     with open(path, 'r') as file:
         sql_script = file.read()
 
     cursor.executescript(sql_script)
     print("SQL script is done")
+
 
 def connect_and_run_execute(execute, *args):
     try:
@@ -26,9 +28,10 @@ def connect_and_run_execute(execute, *args):
         print("SQLite error", error)
 
     finally:
-        if (connection):
+        if connection:
             connection.close()
             print("Connection close")
+
 
 if __name__ == '__main__':
     connect_and_run_execute(run_sql_script, SQL_FILE_PATH)

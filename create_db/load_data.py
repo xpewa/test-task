@@ -1,10 +1,10 @@
-import csv, sqlite3
-import create_bd
+import csv
+import sqlite3
 import time
 from datetime import timedelta
 import logging
 import sys
-import re 
+import re
 
 COUNT_BATCH = 50000
 
@@ -18,21 +18,26 @@ logging.basicConfig(
     format = "%(message)s"
     )
 
+
 def progress(count):
     sys.stdout.write(f"Loaded {count} rows\r")
     sys.stdout.flush()
+
 
 def check_datetime(date):
     is_fit = re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", date)
     return date if is_fit else "0000-00-00T00:00:00"
 
-def check_crime_id(crime_id):
-    is_fit = re.fullmatch(r"\d{9}", crime_id)
-    return crime_id if is_fit else "000000000"
 
-def check_time(time):
-    is_fit = re.fullmatch(r"\d{2}:\d{2}", time)
-    return time if is_fit else "00:00"
+def check_crime_id(initial_id):
+    is_fit = re.fullmatch(r"\d{9}", initial_id)
+    return initial_id if is_fit else "000000000"
+
+
+def check_time(initial_time):
+    is_fit = re.fullmatch(r"\d{2}:\d{2}", initial_time)
+    return initial_time if is_fit else "00:00"
+
 
 start_time = time.monotonic()
 with open(DATE_PATH) as file:
@@ -43,15 +48,15 @@ with open(DATE_PATH) as file:
         count_row = 0
 
         reader = csv.DictReader(file)
-        sql_crime = "insert into Crime values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        SQL_CRIME = "insert into Crime values"\
+                    "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         data = []
 
         for row in reader:
             if count_row % COUNT_BATCH == 0:
-                cursor.executemany(sql_crime, data)
+                cursor.executemany(SQL_CRIME, data)
                 data = []
                 progress(count_row)
-                
 
             crime_id = check_crime_id(row["Crime Id"])
             report_date = check_datetime(row["Report Date"]).replace("T", " ")
@@ -65,10 +70,10 @@ with open(DATE_PATH) as file:
                         call_date_time, row["Disposition"], row["Address"],
                         row["City"], row["State"], row["Agency Id"],
                         row["Address Type"], row["Common Location"]])
-            count_row +=1
+            count_row += 1
 
         if data:
-            cursor.executemany(sql_crime, data)
+            cursor.executemany(SQL_CRIME, data)
             progress(count_row)
 
         connection.commit()
@@ -76,14 +81,14 @@ with open(DATE_PATH) as file:
 
     except sqlite3.Error as error:
         print("SQLite error", error)
-        logging.error(f"SQLite error: {error}")
+        logging.error("SQLite error: %s", count_row)
 
     finally:
-        if (connection):
+        if connection:
             connection.close()
             logging.info("Connection close")
         end_time = time.monotonic()
-        logging.info(f"Number of records created: {count_row}")
-        logging.info(f"Program execution time: {timedelta(seconds=end_time - start_time)}")
-        
-
+        logging.info("Number of records created: %s",
+                     count_row)
+        logging.info("Program execution time: %s",
+                     timedelta(seconds=end_time - start_time))
